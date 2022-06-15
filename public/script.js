@@ -133,6 +133,62 @@ inviteButton.addEventListener("click", (e) => {
   );
 });
 
+shareCreen.addEventListener("click", (e) => {
+  if(streamingScreen == false){
+    navigator.mediaDevices
+    .getDisplayMedia({
+      video: {
+        cursor: 'always',
+        displaySurface: 'window',
+    },
+      audio: true
+    })
+    .then((stream) => {
+      ScreenStream = stream;
+      addVideoStream(myVideo, stream);
+  
+      peer.on("call", (call) => {
+        call.answer(stream);
+        const video = document.createElement("video");
+        call.on("stream", (userVideoStream) => {
+          addVideoStream(video, userVideoStream);
+        });
+      });
+  
+      socket.on("user-connected", (userId) => {
+        connectToNewUser(userId, stream);
+      });
+    });
+    streamingScreen = true;
+    console.log("Streaming Screen Status", streamingScreen);
+  }else{
+    navigator.mediaDevices
+  .getUserMedia({
+    audio: true,
+    video: true,
+  })
+  .then((stream) => {
+    myVideoStream = stream;
+    addVideoStream(myVideo, stream);
+
+    peer.on("call", (call) => {
+      call.answer(stream);
+      const video = document.createElement("video");
+      call.on("stream", (userVideoStream) => {
+        addVideoStream(video, userVideoStream);
+      });
+    });
+
+    socket.on("user-connected", (userId) => {
+      connectToNewUser(userId, stream);
+    });
+  });
+  streamingScreen = false;
+  console.log("Streaming Screen Status", streamingScreen);
+  }
+  
+});
+
 socket.on("createMessage", (message, userName) => {
   messages.innerHTML =
     messages.innerHTML +
