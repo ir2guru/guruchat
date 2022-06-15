@@ -31,7 +31,7 @@ var peer = new Peer(
     }
   ]}
 });
-
+let streamingScreen = false;
 let myVideoStream;
 navigator.mediaDevices
   .getUserMedia({
@@ -94,6 +94,7 @@ text.addEventListener("keydown", (e) => {
 });
 
 const inviteButton = document.querySelector("#inviteButton");
+const shareCreen = document.querySelector("#sharescreen");
 const muteButton = document.querySelector("#muteButton");
 const stopVideo = document.querySelector("#stopVideo");
 muteButton.addEventListener("click", () => {
